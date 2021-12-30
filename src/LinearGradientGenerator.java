@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.stream.IntStream;
 
-public class GradientGenerator implements ImageGenerator {
+public class LinearGradientGenerator implements ImageGenerator {
     private BufferedImage image;
     private int width;
     private int height;
 
-    public GradientGenerator(int width, int height) {
+    public LinearGradientGenerator(int width, int height) {
         this.width = width;
         this.height = height;
         image = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_RGB);
@@ -71,6 +71,5 @@ public class GradientGenerator implements ImageGenerator {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

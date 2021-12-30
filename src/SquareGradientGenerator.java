@@ -21,6 +21,8 @@ public class SquareGradientGenerator implements ImageGenerator {
         int red = 255, blue = 0, green = 124;
         int diameter = Math.min(width, height);
         int middle = diameter / 2;
+        int interval = middle / (255 - blue);
+        int tempInterval = interval;
 
         for (int x = 0; x < middle; x++) {
             for (int y = middle - x; y < middle + x; y++) {
