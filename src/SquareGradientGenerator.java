@@ -42,7 +42,7 @@ public class SquareGradientGenerator implements ImageGenerator {
     @Override
     public void saveImage() {
         try {
-            File file = new File("B:\\Programowanie\\Aplikacje\\imageGenerator\\src\\pics\\gradient.jpeg");
+            File file = new File("src\\pics\\squareGradient.jpeg");
             ImageIO.write(image, "jpeg", file);
         } catch (IOException e) {
             e.printStackTrace();

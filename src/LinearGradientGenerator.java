@@ -59,14 +59,13 @@ public class LinearGradientGenerator implements ImageGenerator {
             for (int x = 0; x < height; x++) {
                 image.setRGB(y, x, pixel);
             }
-
         }
     }
 
     @Override
     public void saveImage() {
         try {
-            File file = new File("B:\\Programowanie\\Aplikacje\\imageGenerator\\src\\pics\\gradient.jpeg");
+            File file = new File("src\\pics\\linearGradient.jpeg");
             ImageIO.write(image, "jpeg", file);
         } catch (IOException e) {
             e.printStackTrace();
