@@ -2,8 +2,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -13,18 +12,26 @@ public class RadialGradientGenerator implements ImageGenerator {
     private BufferedImage image;
     private int radius;
     private List<Integer> chordsLengths;
+    public Map<Integer, Integer> blueGradientValues;
+    private int red;
+    private int green;
+    private int blue;
 
-    public RadialGradientGenerator(int width, int height) {
+    public RadialGradientGenerator(int width, int height, int red, int green, int blue) {
         this.radius = Math.min(width, height) / 2;
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         chordsLengths = new ArrayList<>();
+        blueGradientValues = new LinkedHashMap<>();
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
     }
 
     @Override
     public void generateImage() {
-        int red = 255, blue = 0, green = 124;
         int diameter = radius * 2;
 
+        fillBlueGradientValues();
         countAllChordsLengths();
 
         for (int x = 0; x < radius; x++) {
@@ -33,6 +40,9 @@ public class RadialGradientGenerator implements ImageGenerator {
             int rightBoundary = radius + chordHalf;
 
             for (int y = leftBoundary; y < rightBoundary; y++) {
+                int distance = distanceFromCenter(x, y);
+                int key = distance - distance % 3;
+                blue = blueGradientValues.get(key);
                 int pixel = (red << 24) | (green << 8) | blue;
                 image.setRGB(y, x, pixel);
             }
@@ -48,6 +58,15 @@ public class RadialGradientGenerator implements ImageGenerator {
                 image.setRGB(y, x, pixel);
             }
         }
+    }
+
+    public void fillBlueGradientValues() {
+        int blueColorSteps = 255 - blue;
+        int interval = radius / blueColorSteps;
+
+        IntStream.iterate(0, n -> n + interval)
+                .limit(blueColorSteps)
+                .forEach(num -> blueGradientValues.put(num, blue++));
     }
 
     @Override
@@ -72,8 +91,9 @@ public class RadialGradientGenerator implements ImageGenerator {
     }
 
     private int countChordLength(int distanceFromCenter) {
-        return (int) (2 * Math.sqrt(
-                Math.pow(radius, 2) - Math.pow(distanceFromCenter, 2)
-        ));
+        double radiusSquared = Math.pow(radius, 2);
+        double distanceFromCenterSquared = Math.pow(distanceFromCenter, 2);
+
+        return (int) (2 * Math.sqrt(radiusSquared - distanceFromCenterSquared));
     }
 }

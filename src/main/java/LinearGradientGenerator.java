@@ -2,7 +2,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.stream.IntStream;
 
 public class LinearGradientGenerator implements ImageGenerator {
     private BufferedImage image;
@@ -38,7 +37,6 @@ public class LinearGradientGenerator implements ImageGenerator {
             for (int x = 0; x < width; x++) {
                 image.setRGB(x, y, pixel);
             }
-
         }
     }
 
