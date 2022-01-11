@@ -4,14 +4,14 @@ import java.io.File;
 import java.io.IOException;
 
 public class LinearGradientGenerator implements ImageGenerator {
-    private BufferedImage image;
-    private int width;
-    private int height;
+    private final BufferedImage image;
+    private final int width;
+    private final int height;
 
-    public LinearGradientGenerator(int width, int height) {
-        this.width = width;
-        this.height = height;
-        image = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_RGB);
+    public LinearGradientGenerator(BufferedImage image) {
+        this.image = image;
+        width = image.getWidth();
+        height = image.getHeight();
     }
 
 

@@ -8,7 +8,6 @@ import java.util.stream.IntStream;
 
 public class RadialGradientGenerator implements ImageGenerator {
     //TODO move initializing BufferedImage to another class
-    //TODO this class should have only radius field
     private BufferedImage image;
     private int radius;
     private List<Integer> chordsLengths;
@@ -69,16 +68,6 @@ public class RadialGradientGenerator implements ImageGenerator {
                 .forEach(num -> blueGradientValues.put(num, blue++));
     }
 
-    @Override
-    public void saveImage() {
-        try {
-            File file = new File("src\\pics\\radialGradient.jpeg");
-            ImageIO.write(image, "jpeg", file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public int distanceFromCenter(int x, int y) {
         return (int) Math.sqrt(x * x + y * y);
     }
@@ -95,5 +84,15 @@ public class RadialGradientGenerator implements ImageGenerator {
         double distanceFromCenterSquared = Math.pow(distanceFromCenter, 2);
 
         return (int) (2 * Math.sqrt(radiusSquared - distanceFromCenterSquared));
+    }
+
+    @Override
+    public void saveImage() {
+        try {
+            File file = new File("src\\pics\\radialGradient.jpeg");
+            ImageIO.write(image, "jpeg", file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
