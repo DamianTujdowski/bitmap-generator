@@ -89,7 +89,8 @@ public class LinearGradientGenerator implements ImageGenerator {
 
     private void fillBlueHorizontalGradientValues() {
         int interval = computeHorizontalInterval(blue);
-        final int[] tempBlue = {blue};
+        int tmp = blue;
+        final int[] tempBlue = {tmp};
 
         IntStream.iterate(0, n -> n + interval)
                 .limit(255 - blue)
