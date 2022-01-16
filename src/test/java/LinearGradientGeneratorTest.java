@@ -10,7 +10,7 @@ class LinearGradientGeneratorTest {
 
     @Test
     void checkBlueHorizontalGradientValues() {
-        image = new BufferedImage(500, 200, BufferedImage.TYPE_INT_BGR);
+        image = new BufferedImage(1000, 200, BufferedImage.TYPE_INT_BGR);
         generator = new LinearGradientGenerator(image, 255, 20, 125);
         generator.fillBlueHorizontalGradientValues();
         generator.blueHorizontalGradientValues.forEach((k,v) -> System.out.println(k + " : " + v));
@@ -20,7 +20,7 @@ class LinearGradientGeneratorTest {
     void checkComputeHorizontalInterval() {
         image = new BufferedImage(500, 200, BufferedImage.TYPE_INT_BGR);
         generator = new LinearGradientGenerator(image, 255, 20, 125);
-        int interval = generator.computeHorizontalInterval(125);
+        double interval = generator.computeHorizontalInterval(125);
         System.out.println(interval);
     }
 

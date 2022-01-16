@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.stream.IntStream;
+import java.util.stream.DoubleStream;
 
 public class LinearGradientGenerator implements ImageGenerator {
     public final BufferedImage image;
@@ -53,11 +53,10 @@ public class LinearGradientGenerator implements ImageGenerator {
 
     public void generateHorizontalLinearGradient() {
         fillBlueHorizontalGradientValues();
-
-        int blueInterval = computeHorizontalInterval(blue);
+        double blueInterval = computeHorizontalInterval(blue);
 
         for (int y = 0; y < width; y++) {
-            int key = y - y % blueInterval;
+            int key = calculateKeyForBlue(blueInterval, y);
             blue = blueHorizontalGradientValues.get(key);
 
             int pixel = (red << 16) | (green << 8) | blue;
@@ -68,17 +67,28 @@ public class LinearGradientGenerator implements ImageGenerator {
         }
     }
 
-    public void fillBlueHorizontalGradientValues() {
-        int interval = computeHorizontalInterval(blue);
-        final int[] tempBlue = {blue};
+    private int calculateKeyForBlue(double blueInterval, int y) {
 
-        IntStream.iterate(0, n -> n + interval)
-                .limit(255 - blue)
-                .forEach(num -> blueHorizontalGradientValues.put(num, tempBlue[0]++));
+//        int key = y - (int) Math.round(y % blueInterval);
+        return y - (int) Math.round(y % blueInterval);
     }
 
-    public int computeHorizontalInterval(int color) {
-        return width / (255 - color);
+
+    public void fillBlueHorizontalGradientValues() {
+        double interval = computeHorizontalInterval(blue);
+        int temp = blue;
+        final int[] tempBlue = {temp};
+
+        DoubleStream.iterate(0, n -> n + interval)
+                .limit(255 - blue + 1)
+                .forEach(num -> blueHorizontalGradientValues.put((int) Math.round(num), tempBlue[0]++));
+    }
+
+    public double computeHorizontalInterval(int color) {
+        if (255 - color > width) {
+            return 1;
+        }
+        return (double) width / (255 - color + 1);
     }
 
     @Override
