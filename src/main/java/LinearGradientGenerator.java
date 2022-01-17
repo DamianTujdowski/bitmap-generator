@@ -67,7 +67,7 @@ public class LinearGradientGenerator implements ImageGenerator {
         }
     }
 
-    private int calculateKeyForBlue(double blueInterval, int y) {
+    public int calculateKeyForBlue(double blueInterval, int y) {
 
 //        int key = y - (int) Math.round(y % blueInterval);
         return y - (int) Math.round(y % blueInterval);
@@ -78,7 +78,7 @@ public class LinearGradientGenerator implements ImageGenerator {
         double interval = computeHorizontalInterval(blue);
         int temp = blue;
         final int[] tempBlue = {temp};
-
+//TODO while width is smaller then steps number, change limit value
         DoubleStream.iterate(0, n -> n + interval)
                 .limit(255 - blue + 1)
                 .forEach(num -> blueHorizontalGradientValues.put((int) Math.round(num), tempBlue[0]++));
@@ -94,8 +94,8 @@ public class LinearGradientGenerator implements ImageGenerator {
     @Override
     public void saveImage() {
         try {
-            File file = new File("src\\main\\java\\pics\\linearGradient.jpeg");
-            ImageIO.write(image, "jpeg", file);
+            File file = new File("src\\main\\java\\pics\\linearGradient.png");
+            ImageIO.write(image, "png", file);
         } catch (IOException e) {
             e.printStackTrace();
         }
