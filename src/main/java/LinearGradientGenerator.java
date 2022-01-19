@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.stream.IntStream;
+import java.util.stream.DoubleStream;
 
 public class LinearGradientGenerator implements ImageGenerator {
     private final BufferedImage image;
@@ -16,14 +16,14 @@ public class LinearGradientGenerator implements ImageGenerator {
     private int green;
     private int blue;
 
-    public LinearGradientGenerator(BufferedImage image) {
+    public LinearGradientGenerator(BufferedImage image, int r, int g, int b) {
         this.image = image;
         width = image.getWidth();
         height = image.getHeight();
         blueHorizontalGradientValues = new LinkedHashMap<>();
-        red = 255;
-        green = 124;
-        blue = 20;
+        red = r;
+        green = g;
+        blue = b;
     }
 
     @Override
@@ -51,32 +51,12 @@ public class LinearGradientGenerator implements ImageGenerator {
         }
     }
 
-//    private void generateHorizontalLinearGradient() {
-//        int interval = computeHorizontalInterval(blue);
-//        int tempInterval = interval;
-//        for (int y = 0; y < width; y++) {
-//            if (tempInterval > 0) {
-//                tempInterval--;
-//            } else if (tempInterval == 0) {
-//                blue++;
-//                tempInterval = interval;
-//            }
-//
-//            int pixel = (red << 16) | (green << 8) | blue;
-//
-//            for (int x = 0; x < height; x++) {
-//                image.setRGB(y, x, pixel);
-//            }
-//        }
-//    }
-
     private void generateHorizontalLinearGradient() {
-        fillBlueHorizontalGradientValues();
-
-        int blueInterval = computeHorizontalInterval(blue);
+        fillHorizontalGradientValues(blue, blueHorizontalGradientValues);
+        double blueInterval = computeHorizontalInterval(blue);
 
         for (int y = 0; y < width; y++) {
-            int key = y - y % blueInterval;
+            int key = calculateKeyForBlueGradient(blueInterval, y);
             blue = blueHorizontalGradientValues.get(key);
 
             int pixel = (red << 16) | (green << 8) | blue;
@@ -87,24 +67,30 @@ public class LinearGradientGenerator implements ImageGenerator {
         }
     }
 
-    private void fillBlueHorizontalGradientValues() {
-        int interval = computeHorizontalInterval(blue);
-        final int[] tempBlue = {blue};
-
-        IntStream.iterate(0, n -> n + interval)
-                .limit(255 - blue)
-                .forEach(num -> blueHorizontalGradientValues.put(num, tempBlue[0]++));
+    private void fillHorizontalGradientValues(int color, Map<Integer, Integer> gradientValues) {
+        double interval = computeHorizontalInterval(color);
+        final int[] tempBlue = {color};
+        int stepsLimit = (255 - color) < width ? 255 - color + 1 : width;
+        DoubleStream.iterate(0, n -> n + interval)
+                .limit(stepsLimit)
+                .forEach(num -> gradientValues.put((int) Math.round(num), tempBlue[0]++));
     }
 
-    private int computeHorizontalInterval(int color) {
-        return width / (255 - color);
+    private double computeHorizontalInterval(int color) {
+        int gradientSteps = 255 - color;
+        double interval = (double) width / (gradientSteps + 1);
+        return gradientSteps > width ? 1 : interval;
+    }
+
+    private int calculateKeyForBlueGradient(double blueInterval, int y) {
+        return y - (int) Math.round(y % blueInterval);
     }
 
     @Override
     public void saveImage() {
         try {
-            File file = new File("src\\main\\java\\pics\\linearGradient.jpeg");
-            ImageIO.write(image, "jpeg", file);
+            File file = new File("src\\main\\java\\pics\\linearGradient.png");
+            ImageIO.write(image, "png", file);
         } catch (IOException e) {
             e.printStackTrace();
         }
