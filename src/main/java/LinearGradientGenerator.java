@@ -52,11 +52,11 @@ public class LinearGradientGenerator implements ImageGenerator {
     }
 
     public void generateHorizontalLinearGradient() {
-        fillBlueHorizontalGradientValues();
+        fillHorizontalGradientValues(blue, blueHorizontalGradientValues);
         double blueInterval = computeHorizontalInterval(blue);
 
         for (int y = 0; y < width; y++) {
-            int key = calculateKeyForBlue(blueInterval, y);
+            int key = calculateKeyForBlueGradient(blueInterval, y);
             blue = blueHorizontalGradientValues.get(key);
 
             int pixel = (red << 16) | (green << 8) | blue;
@@ -67,28 +67,23 @@ public class LinearGradientGenerator implements ImageGenerator {
         }
     }
 
-    public int calculateKeyForBlue(double blueInterval, int y) {
-
-//        int key = y - (int) Math.round(y % blueInterval);
-        return y - (int) Math.round(y % blueInterval);
-    }
-
-
-    public void fillBlueHorizontalGradientValues() {
-        double interval = computeHorizontalInterval(blue);
-        int temp = blue;
-        final int[] tempBlue = {temp};
-//TODO while width is smaller then steps number, change limit value
+    public void fillHorizontalGradientValues(int color, Map<Integer, Integer> gradientValues) {
+        double interval = computeHorizontalInterval(color);
+        final int[] tempBlue = {color};
+        int stepsLimit = (255 - color) < width ? 255 - color + 1 : width;
         DoubleStream.iterate(0, n -> n + interval)
-                .limit(255 - blue + 1)
-                .forEach(num -> blueHorizontalGradientValues.put((int) Math.round(num), tempBlue[0]++));
+                .limit(stepsLimit)
+                .forEach(num -> gradientValues.put((int) Math.round(num), tempBlue[0]++));
     }
 
     public double computeHorizontalInterval(int color) {
-        if (255 - color > width) {
-            return 1;
-        }
-        return (double) width / (255 - color + 1);
+        int gradientSteps = 255 - color;
+        double interval = (double) width / (gradientSteps + 1);
+        return gradientSteps > width ? 1 : interval;
+    }
+
+    public int calculateKeyForBlueGradient(double blueInterval, int y) {
+        return y - (int) Math.round(y % blueInterval);
     }
 
     @Override
