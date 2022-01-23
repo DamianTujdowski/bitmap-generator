@@ -1,3 +1,5 @@
+import linearGradientGenerators.HorizontalLinearGradientGenerator;
+import linearGradientGenerators.LinearGradientGenerator;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
@@ -14,7 +16,7 @@ class LinearGradientGeneratorTest {
     @Test
     void blueColorValue_shouldIncreaseByOne() {
         image = new BufferedImage(300, 100, BufferedImage.TYPE_INT_BGR);
-        generator = new LinearGradientGenerator(image, 255, 20, 125);
+        generator = new HorizontalLinearGradientGenerator(image, 255, 20, 125);
         generator.generateImage();
 
         int numberOfStepsWithIncreaseValueBiggerThanOne = IntStream.range(0, image.getWidth())
