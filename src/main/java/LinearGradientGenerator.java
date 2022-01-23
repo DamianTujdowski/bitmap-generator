@@ -10,7 +10,7 @@ public class LinearGradientGenerator implements ImageGenerator {
     private final BufferedImage image;
     private final int width;
     private final int height;
-    private Map<Integer, Integer> blueHorizontalGradientValues;
+    private final Map<Integer, Integer> blueHorizontalGradientValues;
     //TODO move RGB to another class?
     private int red;
     private int green;
@@ -32,7 +32,6 @@ public class LinearGradientGenerator implements ImageGenerator {
     }
 
     private void generateVerticalLinearGradient() {
-        int red = 255, blue = 0, green = 124;
         int interval = height / (255 - blue);
         int tempInterval = interval;
         for (int y = 0; y < height; y++) {
@@ -52,11 +51,11 @@ public class LinearGradientGenerator implements ImageGenerator {
     }
 
     private void generateHorizontalLinearGradient() {
-        fillHorizontalGradientValues(blue, blueHorizontalGradientValues);
-        double blueInterval = computeHorizontalInterval(blue);
+        fillGradientValues(blue, width, blueHorizontalGradientValues);
+        double blueInterval = computeInterval(blue, width);
 
         for (int y = 0; y < width; y++) {
-            int key = calculateKeyForBlueGradient(blueInterval, y);
+            int key = computeKeyToGradientValue(blueInterval, y);
             blue = blueHorizontalGradientValues.get(key);
 
             int pixel = (red << 16) | (green << 8) | blue;
@@ -67,29 +66,36 @@ public class LinearGradientGenerator implements ImageGenerator {
         }
     }
 
-    private void fillHorizontalGradientValues(int color, Map<Integer, Integer> gradientValues) {
-        double interval = computeHorizontalInterval(color);
+    private void fillGradientValues(int color, int direction, Map<Integer, Integer> gradientValues) {
+        double interval = computeInterval(color, direction);
         final int[] tempBlue = {color};
-        int stepsLimit = (255 - color) < width ? 255 - color + 1 : width;
+        int stepsLimit = computeStepsLimit(color, direction);
         DoubleStream.iterate(0, n -> n + interval)
                 .limit(stepsLimit)
-                .forEach(num -> gradientValues.put((int) Math.round(num), tempBlue[0]++));
+                .forEach(num ->
+                        gradientValues.put((int) Math.round(num), tempBlue[0]++)
+                );
     }
 
-    private double computeHorizontalInterval(int color) {
+    private int computeStepsLimit(int color, int direction) {
+        int steps = 255 - color;
+        return steps < direction ? steps + 1 : direction;
+    }
+
+    private double computeInterval(int color, int direction) {
         int gradientSteps = 255 - color;
-        double interval = (double) width / (gradientSteps + 1);
-        return gradientSteps > width ? 1 : interval;
+        double interval = (double) direction / (gradientSteps + 1);
+        return gradientSteps > direction ? 1 : interval;
     }
 
-    private int calculateKeyForBlueGradient(double blueInterval, int y) {
-        return y - (int) Math.round(y % blueInterval);
+    private int computeKeyToGradientValue(double interval, int y) {
+        return y - (int) Math.round(y % interval);
     }
 
     @Override
     public void saveImage() {
         try {
-            File file = new File("src\\main\\java\\pics\\linearGradient.png");
+            File file = new File("src\\main\\resources\\pics\\linearGradient.png");
             ImageIO.write(image, "png", file);
         } catch (IOException e) {
             e.printStackTrace();
