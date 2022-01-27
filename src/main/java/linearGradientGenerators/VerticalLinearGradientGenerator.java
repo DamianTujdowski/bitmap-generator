@@ -7,30 +7,29 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class HorizontalLinearGradientGenerator extends LinearGradientGenerator{
+public class VerticalLinearGradientGenerator extends LinearGradientGenerator {
     private final Map<Integer, Integer> blueGradientValues;
 
-    public HorizontalLinearGradientGenerator(BufferedImage image, int r, int g, int b) {
+    public VerticalLinearGradientGenerator(BufferedImage image, int r, int g, int b) {
         super(image, r, g, b);
         blueGradientValues = new LinkedHashMap<>();
     }
 
     @Override
     public void generateImage() {
-        fillGradientValues(blue, width, blueGradientValues);
-        double blueInterval = computeInterval(blue, width);
+        fillGradientValues(blue, height, blueGradientValues);
+        double blueInterval = computeInterval(blue, height);
 
-        for (int y = 0; y < width; y++) {
+        for (int y = 0; y < height; y++) {
             int key = computeKeyToGradientValue(blueInterval, y);
             blue = blueGradientValues.get(key);
 
             int pixel = (red << 16) | (green << 8) | blue;
 
-            for (int x = 0; x < height; x++) {
-                image.setRGB(y, x, pixel);
+            for (int x = 0; x < width; x++) {
+                image.setRGB(x, y, pixel);
             }
         }
-
     }
 
     @Override

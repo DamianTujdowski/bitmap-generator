@@ -1,10 +1,8 @@
 package linearGradientGenerators;
 
-import javax.imageio.ImageIO;
+import constants.RGBColorValues;
+
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.DoubleStream;
 
@@ -26,25 +24,6 @@ public abstract class LinearGradientGenerator implements ImageGenerator {
         blue = b;
     }
 
-    private void generateVerticalLinearGradient() {
-        int interval = height / (255 - blue);
-        int tempInterval = interval;
-        for (int y = 0; y < height; y++) {
-            if (tempInterval > 0) {
-                tempInterval--;
-            } else if (tempInterval == 0) {
-                blue++;
-                tempInterval = interval;
-            }
-
-            int pixel = (red << 16) | (green << 8) | blue;
-
-            for (int x = 0; x < width; x++) {
-                image.setRGB(x, y, pixel);
-            }
-        }
-    }
-
     public void fillGradientValues(int color, int direction, Map<Integer, Integer> gradientValues) {
         double interval = computeInterval(color, direction);
         final int[] tempBlue = {color};
@@ -57,12 +36,12 @@ public abstract class LinearGradientGenerator implements ImageGenerator {
     }
 
     public int computeStepsLimit(int color, int direction) {
-        int steps = 255 - color;
+        int steps = RGBColorValues.MAXIMUM_VALUE - color;
         return steps < direction ? steps + 1 : direction;
     }
 
     public double computeInterval(int color, int direction) {
-        int gradientSteps = 255 - color;
+        int gradientSteps = RGBColorValues.MAXIMUM_VALUE - color;
         double interval = (double) direction / (gradientSteps + 1);
         return gradientSteps > direction ? 1 : interval;
     }
