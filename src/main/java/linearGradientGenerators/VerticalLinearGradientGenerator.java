@@ -1,6 +1,7 @@
 package linearGradientGenerators;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -10,8 +11,8 @@ import java.util.Map;
 public class VerticalLinearGradientGenerator extends LinearGradientGenerator {
     private final Map<Integer, Integer> blueGradientValues;
 
-    public VerticalLinearGradientGenerator(BufferedImage image, int r, int g, int b) {
-        super(image, r, g, b);
+    public VerticalLinearGradientGenerator(BufferedImage image, Color startColor) {
+        super(image, startColor);
         blueGradientValues = new LinkedHashMap<>();
     }
 

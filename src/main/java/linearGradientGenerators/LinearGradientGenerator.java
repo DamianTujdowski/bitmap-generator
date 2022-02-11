@@ -2,6 +2,7 @@ package linearGradientGenerators;
 
 import constants.RGBColorValues;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 import java.util.stream.DoubleStream;
@@ -10,18 +11,17 @@ public abstract class LinearGradientGenerator implements ImageGenerator {
     protected final int width;
     protected final int height;
     protected final BufferedImage image;
-    //TODO move RGB to another class?
     protected int red;
     protected int green;
     protected int blue;
 
-    public LinearGradientGenerator(BufferedImage image, int r, int g, int b) {
+    public LinearGradientGenerator(BufferedImage image, Color startColor) {
         this.image = image;
         width = image.getWidth();
         height = image.getHeight();
-        red = r;
-        green = g;
-        blue = b;
+        red = startColor.getRed();
+        green = startColor.getGreen();
+        blue = startColor.getBlue();
     }
 
     public void fillGradientValues(int color, int direction, Map<Integer, Integer> gradientValues) {
