@@ -9,21 +9,38 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class VerticalLinearGradientGenerator extends LinearGradientGenerator {
-    private final Map<Integer, Integer> blueGradientValues;
 
     public VerticalLinearGradientGenerator(BufferedImage image, Color startColor) {
         super(image, startColor);
-        blueGradientValues = new LinkedHashMap<>();
     }
 
     @Override
     public void generateImage() {
-        fillGradientValues(blue, height, blueGradientValues);
+        fillGradientsWithColorValues();
+        double redInterval = computeInterval(red, height);
+        double greenInterval = computeInterval(green, height);
         double blueInterval = computeInterval(blue, height);
 
+        System.out.println("generatorInterval " + redInterval);
+
+        redGradientValues.entrySet()
+                .stream()
+                .filter(e -> e.getKey() > 90 & e.getKey() < 118)
+                .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue()));
+
         for (int y = 0; y < height; y++) {
-            int key = computeKeyToGradientValue(blueInterval, y);
-            blue = blueGradientValues.get(key);
+            int redKey = computeKeyToGradientValue(redInterval, y);
+
+            if (redKey > 107) {
+                System.out.println("redkey: " + redKey);
+            }
+
+//            red = redGradientValues.get(redKey);
+            red = getValue(redGradientValues, redKey);
+            int greenKey = computeKeyToGradientValue(greenInterval, y);
+            green = greenGradientValues.get(greenKey);
+            int blueKey = computeKeyToGradientValue(blueInterval, y);
+            blue = blueGradientValues.get(blueKey);
 
             int pixel = (red << 16) | (green << 8) | blue;
 
@@ -31,6 +48,20 @@ public class VerticalLinearGradientGenerator extends LinearGradientGenerator {
                 image.setRGB(x, y, pixel);
             }
         }
+    }
+
+    private int getValue(Map<Integer, Integer> gradientColorValues, int key) {
+        if (gradientColorValues.containsKey(key)) {
+            return gradientColorValues.get(key);
+        } else {
+            return gradientColorValues.get(++key);
+        }
+    }
+
+    private void fillGradientsWithColorValues() {
+        fillGradientValues(red, height, redGradientValues);
+        fillGradientValues(green, height, greenGradientValues);
+        fillGradientValues(blue, height, blueGradientValues);
     }
 
     @Override

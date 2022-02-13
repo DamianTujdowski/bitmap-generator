@@ -5,19 +5,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class HorizontalLinearGradientGenerator extends LinearGradientGenerator{
-    private final Map<Integer, Integer> redGradientValues;
-    private final Map<Integer, Integer> greenGradientValues;
-    private final Map<Integer, Integer> blueGradientValues;
 
     public HorizontalLinearGradientGenerator(BufferedImage image, Color startColor) {
         super(image, startColor);
-        redGradientValues = new LinkedHashMap<>();
-        greenGradientValues = new LinkedHashMap<>();
-        blueGradientValues = new LinkedHashMap<>();
     }
 
     @Override
