@@ -62,8 +62,29 @@ class HorizontalLinearGradientGeneratorTest {
 
         assertEquals(0, numberOfStepsWithIncreaseValueBiggerThanOne);
     }
+
+    @Test
+    void redColorHas255InputValue_shouldNotChange() {
+        image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_BGR);
+        color = new Color(255, 20, 125);
+        generator = new HorizontalLinearGradientGenerator(image, color);
+        generator.generateImage();
+
+        int sumOfPixelColorValuesInRow = IntStream.range(0, image.getWidth())
+                .mapToObj(i -> new Color(image.getRGB(i, 0)))
+                .mapToInt(Color::getRed)
+                .sum();
+
+        int width = image.getWidth();
+        int expected = sumOfPixelColorValuesInRow / width;
+
+        int redColorValue = color.getRed();
+
+        assertEquals(expected, redColorValue);
+    }
+
     private int checkColorIncreaseValue(int f, int l) {
-        return  f == l || f == l - 1 ? l : 0;
+        return f == l || f == l - 1 ? l : 0;
     }
 
 }

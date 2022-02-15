@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class VerticalLinearGradientGeneratorTest {
     LinearGradientGenerator generator;
@@ -16,7 +16,7 @@ class VerticalLinearGradientGeneratorTest {
     Color color;
 
     @Test
-    void redColorValue_shouldIncreaseByOne() {
+    void redColorValue_shouldIncreaseByByZeroOrOne() {
         image = new BufferedImage(100, 300, BufferedImage.TYPE_INT_BGR);
         color = new Color(200, 20, 125);
         generator = new VerticalLinearGradientGenerator(image, color);
@@ -32,7 +32,7 @@ class VerticalLinearGradientGeneratorTest {
     }
 
     @Test
-    void greenColorValue_shouldIncreaseByOne() {
+    void greenColorValue_shouldIncreaseByByZeroOrOne() {
         image = new BufferedImage(100, 300, BufferedImage.TYPE_INT_BGR);
         color = new Color(255, 20, 125);
         generator = new VerticalLinearGradientGenerator(image, color);
@@ -48,7 +48,23 @@ class VerticalLinearGradientGeneratorTest {
     }
 
     @Test
-    void blueColorValue_shouldIncreaseByOne() {
+    void greenColorValue_noNullPointerExceptionIsThrown() {
+        image = new BufferedImage(100, 300, BufferedImage.TYPE_INT_BGR);
+        color = new Color(255, 125, 125);
+        generator = new VerticalLinearGradientGenerator(image, color);
+        generator.generateImage();
+
+        int numberOfStepsWithIncreaseValueBiggerThanOne = IntStream.range(0, image.getHeight())
+                .mapToObj(i -> new Color(image.getRGB(0, i)))
+                .mapToInt(Color::getGreen)
+                .reduce(this::checkColorIncreaseValue)
+                .getAsInt() % RGBColorValues.MAXIMUM_VALUE;
+
+        assertEquals(0, numberOfStepsWithIncreaseValueBiggerThanOne);
+    }
+
+    @Test
+    void blueColorValue_shouldIncreaseByZeroOrOne() {
         image = new BufferedImage(100, 300, BufferedImage.TYPE_INT_BGR);
         color = new Color(255, 20, 125);
         generator = new VerticalLinearGradientGenerator(image, color);
@@ -63,8 +79,43 @@ class VerticalLinearGradientGeneratorTest {
         assertEquals(0, numberOfStepsWithIncreaseValueBiggerThanOne);
     }
 
+    @Test
+    void blueColorValue_noNullPointerExceptionIsThrown() {
+        image = new BufferedImage(100, 300, BufferedImage.TYPE_INT_BGR);
+        color = new Color(255, 20, 10);
+        generator = new VerticalLinearGradientGenerator(image, color);
+        generator.generateImage();
+
+        int numberOfStepsWithIncreaseValueBiggerThanOne = IntStream.range(0, image.getHeight())
+                .mapToObj(i -> new Color(image.getRGB(0, i)))
+                .mapToInt(Color::getBlue)
+                .reduce(this::checkColorIncreaseValue)
+                .getAsInt() % RGBColorValues.MAXIMUM_VALUE;
+
+        assertEquals(0, numberOfStepsWithIncreaseValueBiggerThanOne);
+    }
+
+    @Test
+    void redColorHas255InputValue_shouldNotChange() {
+        image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_BGR);
+        color = new Color(255, 20, 125);
+        generator = new VerticalLinearGradientGenerator(image, color);
+        generator.generateImage();
+
+        int sumOfPixelColorValuesInRow = IntStream.range(0, image.getWidth())
+                .mapToObj(i -> new Color(image.getRGB(0, i)))
+                .mapToInt(Color::getRed)
+                .sum();
+
+        int height = image.getHeight();
+        int expected = sumOfPixelColorValuesInRow / height;
+
+        int redColorValue = color.getRed();
+
+        assertEquals(expected, redColorValue);
+    }
+
     private int checkColorIncreaseValue(int f, int l) {
-        System.out.println(f + ": " + l);
         return  f == l || f == l - 1 ? l : 0;
     }
 

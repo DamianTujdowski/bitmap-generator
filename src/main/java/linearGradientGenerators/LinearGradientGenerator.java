@@ -33,20 +33,19 @@ public abstract class LinearGradientGenerator implements ImageGenerator {
 
     public void fillGradientValues(int color, int direction, Map<Integer, Integer> gradientValues) {
         double interval = computeInterval(color, direction);
-        System.out.println("fill interval " + interval);
-        final int[] tempBlue = {color};
+        final int[] tempColor = {color};
         int stepsLimit = computeStepsLimit(color, direction);
 
         DoubleStream.iterate(0, n -> n + interval)
                 .limit(stepsLimit)
                 .forEach(num ->
-                        gradientValues.put((int) Math.round(num), tempBlue[0]++)
+                        gradientValues.put((int) Math.round(num), tempColor[0]++)
                 );
     }
 
     public int computeStepsLimit(int color, int direction) {
-        int steps = RGBColorValues.MAXIMUM_VALUE - color;
-        return steps < direction ? steps + 1 : direction;
+        int gradientSteps = RGBColorValues.MAXIMUM_VALUE - color;
+        return gradientSteps < direction ? gradientSteps + 1 : direction;
     }
 
     public double computeInterval(int color, int direction) {
@@ -55,13 +54,16 @@ public abstract class LinearGradientGenerator implements ImageGenerator {
         return gradientSteps > direction ? 1 : interval;
     }
 
-    public int computeKeyToGradientValue(double interval, int y) {
-        if (interval > 5 & y > 100) {
-            System.out.println(interval + ": " + y);
-            System.out.println((int) Math.round(y % interval));
-            System.out.println( y - (int) Math.round(y % interval));
+    public int computeKeyToGradientValue(double interval, int coordinate) {
+        return coordinate - (int) Math.round(coordinate % interval);
+    }
+
+    public int getColorValue(Map<Integer, Integer> gradientColorValues, int key) {
+        if (gradientColorValues.containsKey(key)) {
+            return gradientColorValues.get(key);
+        } else {
+            return gradientColorValues.get(++key);
         }
-        return y - (int) Math.round(y % interval);
     }
 
 }

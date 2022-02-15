@@ -19,18 +19,20 @@ public class HorizontalLinearGradientGenerator extends LinearGradientGenerator{
         double greenInterval = computeInterval(green, width);
         double blueInterval = computeInterval(blue, width);
 
-        for (int y = 0; y < width; y++) {
-            int redKey = computeKeyToGradientValue(redInterval, y);
-            red = redGradientValues.get(redKey);
-            int greenKey = computeKeyToGradientValue(greenInterval, y);
-            green = greenGradientValues.get(greenKey);
-            int blueKey = computeKeyToGradientValue(blueInterval, y);
-            blue = blueGradientValues.get(blueKey);
+        for (int x = 0; x < width; x++) {
+            int redKey = computeKeyToGradientValue(redInterval, x);
+            red = getColorValue(redGradientValues, redKey);
+
+            int greenKey = computeKeyToGradientValue(greenInterval, x);
+            green = getColorValue(greenGradientValues, greenKey);
+
+            int blueKey = computeKeyToGradientValue(blueInterval, x);
+            blue = getColorValue(blueGradientValues, blueKey);
 
             int pixel = (red << 16) | (green << 8) | blue;
 
-            for (int x = 0; x < height; x++) {
-                image.setRGB(y, x, pixel);
+            for (int y = 0; y < height; y++) {
+                image.setRGB(x, y, pixel);
             }
         }
 
