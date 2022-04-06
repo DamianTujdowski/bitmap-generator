@@ -1,6 +1,6 @@
 package linearGradientGenerators;
 
 public interface ImageGenerator {
-    void generateImage();
+    void fillImage();
     void saveImage(String fileFormat, String path);
 }

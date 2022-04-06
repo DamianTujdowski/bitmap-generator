@@ -7,34 +7,23 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.DoubleStream;
 
-public class LinearGradientGenerator {
-    protected Map<Integer, Integer> redGradientValues;
-    protected Map<Integer, Integer> greenGradientValues;
-    protected Map<Integer, Integer> blueGradientValues;
-    private final Color startColor;
-    private final Color endColor;
+public class LinearGradientGenerator  {
+    protected final Map<Integer, Integer> redGradientValues;
+    protected final Map<Integer, Integer> greenGradientValues;
+    protected final Map<Integer, Integer> blueGradientValues;
     protected int red;
     protected int green;
     protected int blue;
-//TODO add method/class that generates colors based on number of passed arguments
-    //0 random
-    //1 1 random color 1 user
-    //2 0 random colors, both from user
-    public LinearGradientGenerator(Color ...colors) {
+
+    public LinearGradientGenerator(Color startColor) {
         redGradientValues = new LinkedHashMap<>();
         greenGradientValues = new LinkedHashMap<>();
         blueGradientValues = new LinkedHashMap<>();
-        //TODO implement method
-        startColor = computeColorRGBValues(colors);
-        endColor = computeColorRGBValues(colors);
+        red = startColor.getRed();
+        green = startColor.getGreen();
+        blue = startColor.getBlue();
     }
 
-    private Color computeColorRGBValues(Color[] colors) {
-        int count = colors.length;
-
-        return new Color(13,13,13);
-    }
-//TODO replace color variable with Enum indicating color
     public void fillGradientValues(int color, int direction, Map<Integer, Integer> gradientValues) {
         double interval = computeInterval(color, direction);
         final int[] tempColor = {color};
@@ -47,13 +36,11 @@ public class LinearGradientGenerator {
                 );
     }
 
-    //TODO replace color variable with Enum indicating color
     private int computeStepsLimit(int color, int direction) {
         int gradientSteps = RGBColorValues.MAXIMUM_VALUE - color;
         return gradientSteps < direction ? gradientSteps + 1 : direction;
     }
 
-    //TODO gradientSteps = startColor.getRed() - endColor.getRed()  color variable with Enum indicating color
     public double computeInterval(int color, int direction) {
         int gradientSteps = RGBColorValues.MAXIMUM_VALUE - color;
         double interval = (double) direction / (gradientSteps + 1);
