@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.DoubleStream;
 
-public class LinearGradientGenerator  {
+public class LinearGradientGeneratorFromOneColor {
     protected final Map<Integer, Integer> redGradientValues;
     protected final Map<Integer, Integer> greenGradientValues;
     protected final Map<Integer, Integer> blueGradientValues;
@@ -15,7 +15,7 @@ public class LinearGradientGenerator  {
     protected int green;
     protected int blue;
 
-    public LinearGradientGenerator(Color startColor) {
+    public LinearGradientGeneratorFromOneColor(Color startColor) {
         redGradientValues = new LinkedHashMap<>();
         greenGradientValues = new LinkedHashMap<>();
         blueGradientValues = new LinkedHashMap<>();
