@@ -1,5 +1,7 @@
 package linearGradientGenerators;
 
+import constants.ColorIndicator;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -22,9 +24,9 @@ public class HorizontalLinearGradientGenerator implements ImageGenerator {
     @Override
     public void fillImage() {
         fillGradientsWithColorValues();
-        double redInterval = generator.computeInterval(generator.red, width);
-        double greenInterval = generator.computeInterval(generator.green, width);
-        double blueInterval = generator.computeInterval(generator.blue, width);
+        double redInterval = generator.computeInterval(ColorIndicator.RED, width);
+        double greenInterval = generator.computeInterval(ColorIndicator.GREEN, width);
+        double blueInterval = generator.computeInterval(ColorIndicator.BLUE, width);
 
 
         for (int x = 0; x < width; x++) {
@@ -47,9 +49,9 @@ public class HorizontalLinearGradientGenerator implements ImageGenerator {
     }
 
     private void fillGradientsWithColorValues() {
-        generator.fillGradientValues(generator.red, width, generator.redGradientValues);
-        generator.fillGradientValues(generator.green, width, generator.greenGradientValues);
-        generator.fillGradientValues(generator.blue, width, generator.blueGradientValues);
+        generator.fillGradientValues(ColorIndicator.RED, width, generator.redGradientValues);
+        generator.fillGradientValues(ColorIndicator.GREEN, width, generator.greenGradientValues);
+        generator.fillGradientValues(ColorIndicator.BLUE, width, generator.blueGradientValues);
     }
 
     @Override

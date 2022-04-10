@@ -1,7 +1,6 @@
 package linearGradientGenerators;
 
 import constants.ColorIndicator;
-import constants.RGBColorValues;
 
 import java.awt.*;
 import java.util.LinkedHashMap;
@@ -31,17 +30,16 @@ public class LinearGradientGenerator {
         Color[] result = new Color[2];
         int numberOfPassedColors = colors.length;
         switch (numberOfPassedColors) {
+            case 0:
+                result[0] = generator.generateStartColor();
+                result[1] = generator.generateEndColor(result[0]);
             case 1:
                 result[0] = colors[0];
                 result[1] = generator.generateEndColor(result[0]);
                 break;
-            case 2:
+            default:
                 result[0] = colors[0];
                 result[1] = colors[1];
-                break;
-            default:
-                result[0] = generator.generateStartColor();
-                result[1] = generator.generateEndColor(result[0]);
                 break;
         }
         return result;
@@ -50,9 +48,10 @@ public class LinearGradientGenerator {
     //TODO fix logic in DoubleStream - what if startColor is smaller then endColor
     public void fillGradientValues(ColorIndicator indicator, int direction, Map<Integer, Integer> gradientValues) {
         double interval = computeInterval(indicator, direction);
-        int startColor = computeStartColor(indicator);
+        int startColor = getStartColor(indicator);
         final int[] tempColor = {startColor};
         int stepsLimit = computeStepsLimit(indicator, direction);
+
 
         DoubleStream.iterate(0, n -> n + interval)
                 .limit(stepsLimit)
@@ -61,8 +60,7 @@ public class LinearGradientGenerator {
                 );
     }
 
-    //TODO improve name
-    private int computeStartColor(ColorIndicator indicator) {
+    private int getStartColor(ColorIndicator indicator) {
         switch (indicator) {
             case RED:
                 return startColor.getRed();
@@ -89,10 +87,13 @@ public class LinearGradientGenerator {
         switch (indicator) {
             case RED:
                 result = startColor.getRed() - endColor.getRed();
+                break;
             case GREEN:
                 result = startColor.getGreen() - endColor.getGreen();
+                break;
             case BLUE:
                 result = startColor.getBlue() - endColor.getBlue();
+                break;
         }
         return Math.abs(result);
     }
