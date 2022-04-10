@@ -1,29 +1,27 @@
 package linearGradientGenerators;
 
-import constants.ColorIndicator;
-
 import java.awt.*;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.stream.DoubleStream;
 
 public class LinearGradientGenerator {
     private final RandomColorGenerator generator;
 
-    protected Map<Integer, Integer> redGradientValues;
-    protected Map<Integer, Integer> greenGradientValues;
-    protected Map<Integer, Integer> blueGradientValues;
     private final Color startColor;
     private final Color endColor;
+    private ColorGradient redGradient;
+    private ColorGradient greenGradient;
+    private ColorGradient blueGradient;
+    private final int dimension;
 
-    public LinearGradientGenerator(Color... userColors) {
+    public LinearGradientGenerator(int dimension, Color... userColors) {
         generator = new RandomColorGenerator();
-        redGradientValues = new LinkedHashMap<>();
-        greenGradientValues = new LinkedHashMap<>();
-        blueGradientValues = new LinkedHashMap<>();
+        this.dimension = dimension;
         Color[] colors = computeColorRGBValues(userColors);
         startColor = colors[0];
         endColor = colors[1];
+        redGradient = new ColorGradient(startColor.getRed(), endColor.getRed());
+        greenGradient = new ColorGradient(startColor.getGreen(), endColor.getGreen());
+        blueGradient = new ColorGradient(startColor.getBlue(), endColor.getBlue());
+        fillColorGradientsWithColorValues();
     }
 
     private Color[] computeColorRGBValues(Color[] colors) {
@@ -45,69 +43,38 @@ public class LinearGradientGenerator {
         return result;
     }
 
-    //TODO fix logic in DoubleStream - what if startColor is smaller then endColor
-    public void fillGradientValues(ColorIndicator indicator, int direction, Map<Integer, Integer> gradientValues) {
-        double interval = computeInterval(indicator, direction);
-        int startColor = getStartColor(indicator);
-        final int[] tempColor = {startColor};
-        int stepsLimit = computeStepsLimit(indicator, direction);
-
-
-        DoubleStream.iterate(0, n -> n + interval)
-                .limit(stepsLimit)
-                .forEach(num ->
-                        gradientValues.put((int) Math.round(num), tempColor[0]++)
-                );
+    private void fillColorGradientsWithColorValues() {
+        redGradient.fillGradientValues(dimension);
+        greenGradient.fillGradientValues(dimension);
+        blueGradient.fillGradientValues(dimension);
     }
 
-    private int getStartColor(ColorIndicator indicator) {
-        switch (indicator) {
-            case RED:
-                return startColor.getRed();
-            case GREEN:
-                return startColor.getGreen();
-            default:
-                return startColor.getBlue();
-        }
+    public double computeRedInterval() {
+        return redGradient.computeInterval(dimension);
     }
 
-    private int computeStepsLimit(ColorIndicator indicator, int direction) {
-        int gradientSteps = computeGradientSteps(indicator);
-        return gradientSteps < direction ? gradientSteps + 1 : direction;
+    public double computeGreenInterval() {
+        return greenGradient.computeInterval(dimension);
     }
 
-    public double computeInterval(ColorIndicator indicator, int direction) {
-        int gradientSteps = computeGradientSteps(indicator);
-        double interval = (double) direction / (gradientSteps + 1);
-        return gradientSteps > direction ? 1 : interval;
+    public double computeBlueInterval() {
+        return blueGradient.computeInterval(dimension);
     }
 
-    private int computeGradientSteps(ColorIndicator indicator) {
-        int result = 0;
-        switch (indicator) {
-            case RED:
-                result = startColor.getRed() - endColor.getRed();
-                break;
-            case GREEN:
-                result = startColor.getGreen() - endColor.getGreen();
-                break;
-            case BLUE:
-                result = startColor.getBlue() - endColor.getBlue();
-                break;
-        }
-        return Math.abs(result);
+    public int getRedGradientColorValue(int key) {
+        return redGradient.getColorValue(key);
+    }
+
+    public int getGreenGradientColorValue(int key) {
+        return greenGradient.getColorValue(key);
+    }
+
+    public int getBlueGradientColorValue(int key) {
+        return blueGradient.getColorValue(key);
     }
 
     public int computeKeyToGradientValue(double interval, int coordinate) {
         return coordinate - (int) Math.round(coordinate % interval);
-    }
-
-    public int getColorValue(Map<Integer, Integer> gradientColorValues, int key) {
-        if (gradientColorValues.containsKey(key)) {
-            return gradientColorValues.get(key);
-        } else {
-            return gradientColorValues.get(++key);
-        }
     }
 
 }

@@ -1,8 +1,7 @@
 package linearGradientGenerators;
 
-import constants.ColorIndicator;
-
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -14,8 +13,8 @@ public class HorizontalLinearGradientGenerator implements ImageGenerator {
     private final int width;
     private final int height;
 
-    public HorizontalLinearGradientGenerator(LinearGradientGenerator generator, BufferedImage image) {
-        this.generator = generator;
+    public HorizontalLinearGradientGenerator(BufferedImage image, Color... colors) {
+        this.generator = new LinearGradientGenerator(image.getHeight(), colors);
         this.image = image;
         this.width = image.getWidth();
         this.height = image.getHeight();
@@ -23,21 +22,19 @@ public class HorizontalLinearGradientGenerator implements ImageGenerator {
 
     @Override
     public void fillImage() {
-        fillGradientsWithColorValues();
-        double redInterval = generator.computeInterval(ColorIndicator.RED, width);
-        double greenInterval = generator.computeInterval(ColorIndicator.GREEN, width);
-        double blueInterval = generator.computeInterval(ColorIndicator.BLUE, width);
-
+        double redInterval = generator.computeRedInterval();
+        double greenInterval = generator.computeGreenInterval();
+        double blueInterval = generator.computeBlueInterval();
 
         for (int x = 0; x < width; x++) {
             int redKey = generator.computeKeyToGradientValue(redInterval, x);
-            int red = generator.getColorValue(generator.redGradientValues, redKey);
+            int red = generator.getRedGradientColorValue(redKey);
 
             int greenKey = generator.computeKeyToGradientValue(greenInterval, x);
-            int green = generator.getColorValue(generator.greenGradientValues, greenKey);
+            int green = generator.getGreenGradientColorValue(greenKey);
 
             int blueKey = generator.computeKeyToGradientValue(blueInterval, x);
-            int blue = generator.getColorValue(generator.blueGradientValues, blueKey);
+            int blue = generator.getBlueGradientColorValue(blueKey);
 
             int pixel = (red << 16) | (green << 8) | blue;
 
@@ -45,13 +42,6 @@ public class HorizontalLinearGradientGenerator implements ImageGenerator {
                 image.setRGB(x, y, pixel);
             }
         }
-
-    }
-
-    private void fillGradientsWithColorValues() {
-        generator.fillGradientValues(ColorIndicator.RED, width, generator.redGradientValues);
-        generator.fillGradientValues(ColorIndicator.GREEN, width, generator.greenGradientValues);
-        generator.fillGradientValues(ColorIndicator.BLUE, width, generator.blueGradientValues);
     }
 
     @Override
